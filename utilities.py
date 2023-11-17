@@ -1,8 +1,9 @@
-  
+import os
+from datetime import datetime, timezone
+
 # I copied code from here https://www.programiz.com/python-programming/datetime/current-datetime
 # TODO it would be nice to support an argument which specifies the timezone instead of hardcoding UTC
-def getDateTime():
-  from datetime import datetime, timezone
+def getDateTime():  
   # datetime object containing current date and time
   now = datetime.now(timezone.utc)
   # dd/mm/YY H:M:S
@@ -12,7 +13,6 @@ def getDateTime():
 
 # This is similar to the code above except that slashes have been replaced with dashes to make it safe for filenames
 def getDateTimeFormatedForFilename():
-  from datetime import datetime, timezone
   # datetime object containing current date and time
   now = datetime.now(timezone.utc)
   dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
@@ -28,7 +28,6 @@ def get_time_hh_mm_ss(seconds):
 # Note: This assumes that there are only images and .txt and .log files in the directory
 # A better implementation would be to have an argument that accepts a list of file extentions to count
 def countNumberOfImagesInFolder(folder):
-  import os
   count = 0
   # Iterate directory
   for f in os.listdir(folder):
@@ -42,12 +41,18 @@ def reformatToSafeString(inputString):
   return inputString.replace("(", "\(").replace(")", "\)").replace("&", "\&")
 
 # Mount Google Drive from inside Google Colab
-def connectToGoogleDrive(): 
-   import os
+def connectToGoogleDrive():    
    from google.colab import drive
    if not os.path.exists('/content/drive'):
-        print("Connect to Google Drive")
+        print("Connecting to Google Drive.")
         drive.mount('/content/drive')
+
+def checkFileExists(path, name):
+   if not os.path.exists(path):
+      return False
+   if not os.path.isfile(os.path.join(path, name)):
+      return False
+   return True
 
 def writeLineToFile(filePath, fileName, lineText):
    filePathName = filePath + fileName 
