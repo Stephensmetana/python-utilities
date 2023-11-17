@@ -40,6 +40,12 @@ def countNumberOfImagesInFolder(folder):
 def reformatToSafeString(inputString):
   return inputString.replace("(", "\(").replace(")", "\)").replace("&", "\&")
 
+def getTorF(booleanValue):
+  if  booleanValue:
+    return "True"
+  else:
+    return "False"
+  
 # Mount Google Drive from inside Google Colab
 def connectToGoogleDrive():    
    from google.colab import drive
@@ -54,32 +60,97 @@ def checkFileExists(path, name):
       return False
    return True
 
+# Its probably not effiencent to open and close the file everytime a line is written. I'll refactor if I see any proformance problems
 def writeLineToFile(filePath, fileName, lineText):
-   filePathName = filePath + fileName 
-   fileToUpdate = open(filePathName, 'w')
+   filePathName = os.path.join(filePath, fileName) 
+   if(not checkFileExists(filePath, fileName)):
+      # "w" will create a new file and open it 
+      fileToUpdate = open(filePathName, "w")
+   else: 
+      # "a" will open an existing file for appending
+      fileToUpdate = open(filePathName, "a")
    contentToWrite = lineText + "\n"
    fileToUpdate.write(contentToWrite)
    fileToUpdate.close()
 
 def readFile(filePath, fileName):
-   filePathName = filePath + fileName 
+   filePathName = os.path.join(filePath, fileName) 
+   if(not checkFileExists(filePath, fileName)):
+      print(f"Error. No file {filePathName} exists")
+      return
    fileToRead = open(filePathName, 'r')
    data = fileToRead.read()
    fileToRead.close()
    return data
 
+def writeLineBreakToFile(filePath, fileName):
+  writeLineToFile(filePath, fileName, "==============================")
+ 
+def writeHeaderToFile(filePath, fileName, headerString):
+  writeLineToFile(filePath, fileName, "")
+  writeLineBreakToFile(filePath, fileName)
+  writeLineToFile(filePath, fileName, headerString)
+  writeLineBreakToFile(filePath, fileName)
+  writeLineToFile(filePath, fileName, "")
 
-"""" I dont know how to write google colab code that invokes the shell in a python file without a syntax error so this code is commented out for now
+# This function is highly specific to AI Lora training
+def writeLogHeaderToFile(filePath, fileName, projectName):
+  writeLineBreakToFile(filePath, fileName)
+  logLineOne = "Log file for Automated Lora Maker project: " + projectName
+  writeLineToFile(filePath, fileName,  logLineOne)
+  logDateTimeLine = "Date of creation: " + getDateTime()
+  writeLineToFile(filePath, fileName, logDateTimeLine)
+  writeLineBreakToFile(filePath, fileName)
 
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def writeToFile(filename, text):
-  ! echo {text} >> {filename}
+def writeLogForTagging(filePath, fileName, trigger, gelbooruSearchQuery, removedTags, topTags, taggingTime):
+  writeHeaderToFile(filePath, fileName, "Tagging Logs")
+  logTriggerLine = "Trigger(s): " + str(trigger)
+  writeLineToFile(filePath, fileName, logTriggerLine)
+  logGelbooruSearchQueryLine = "Gelbooru search query: " + str(gelbooruSearchQuery)
+  writeLineToFile(filePath, fileName, logGelbooruSearchQueryLine)
+  logAbsorbedTagsLine = "Tags absorbed into Trigger: " + str(removedTags)
+  writeLineToFile(filePath, fileName,  logAbsorbedTagsLine)
+  logTop50TagsLine = "Top 50 tags: " + str(topTags)
+  writeLineToFile(filePath, fileName, logTop50TagsLine)
+  logTagTimerLine = "Tagging Process took: " + str(get_time_hh_mm_ss(taggingTime))
+  writeLineToFile(filePath, fileName, logTagTimerLine)
 
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def clearFile(filename):
-   ! echo "" > {filename}
+def writeLogForLoraTrainingSettings(filePath, fileName, dataSetFolder, modelName, flipAug, numRepeats, perferredUnits, howManyUnits, trainingBatchSize, dimToUse, trainingTime, totalTime):
+    writeHeaderToFile(filePath, fileName, "Lora Training Data")
+    logLoraTrainingLogTemp = "Trained on: " + str(countNumberOfImagesInFolder(dataSetFolder)) + " images"
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Training Model: " + modelName
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "flip_aug: " + getTorF(flipAug)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Num of Repeats: " + str(numRepeats)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Unit is Epochs or Steps: " + str(perferredUnits)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Number of Epochs or Steps: " + str(howManyUnits)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Training Batch Size: " + str(trainingBatchSize)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Network Dim: " + dimToUse
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTimerLine = "Lora Creation Process took: " + str(get_time_hh_mm_ss(trainingTime))
+    writeLineToFile(filePath, fileName, logLoraTimerLine)
+    logLoraTimerLine = "Total Process took: " + str(get_time_hh_mm_ss(totalTime))
+    writeLineToFile(filePath, fileName, logLoraTimerLine)
 
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def writeLineToFile(filename):
-  ! echo "==============================" >> {filename}
-"""
+def writeLogForFlipAugs(filePath, fileName, isImageDownloadSkipped, isTaggingSkipped, isTrainingSkipped):
+  writeHeaderToFile(filePath, fileName, "Skip Flags")
+  logTemp = "skip_image_downloading: " + getTorF(isImageDownloadSkipped)
+  writeLineToFile(filePath, fileName, logTemp)
+  logTemp = "skip_tagging: " + getTorF(isTaggingSkipped)
+  writeLineToFile(filePath, fileName, logTemp)
+  logTemp = "skip_training: " + getTorF(isTrainingSkipped)
+  writeLineToFile(filePath, fileName, logTemp)
+
+# Copypasta from https://www.w3schools.com/python/python_file_remove.asp 
+def deleteFile(filePath, fileName):
+    fileToDelete = os.path.join(filePath, fileName)
+    if os.path.exists(fileToDelete):
+        os.remove(fileToDelete)
+    else:
+        print(f"The file {fileToDelete} does not exist")
