@@ -41,6 +41,29 @@ def countNumberOfImagesInFolder(folder):
 def reformatToSafeString(inputString):
   return inputString.replace("(", "\(").replace(")", "\)").replace("&", "\&")
 
+# Mount Google Drive from inside Google Colab
+def connectToGoogleDrive(): 
+   import os
+   from google.colab import drive
+   if not os.path.exists('/content/drive'):
+        print("Connect to Google Drive")
+        drive.mount('/content/drive')
+
+def writeLineToFile(filePath, fileName, lineText):
+   filePathName = filePath + fileName 
+   fileToUpdate = open(filePathName, 'w')
+   contentToWrite = lineText + "\n"
+   fileToUpdate.write(contentToWrite)
+   fileToUpdate.close()
+
+def readFile(filePath, fileName):
+   filePathName = filePath + fileName 
+   fileToRead = open(filePathName, 'r')
+   data = fileToRead.read()
+   fileToRead.close()
+   return data
+
+
 """" I dont know how to write google colab code that invokes the shell in a python file without a syntax error so this code is commented out for now
 
 # This function assumes it is being called within Google Colab - it will likely not work anywhere else 
