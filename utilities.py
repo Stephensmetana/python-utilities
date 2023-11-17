@@ -1,16 +1,4 @@
-
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def writeToFile(filename, text):
-  ! echo {text} >> {filename}
-
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def clearFile(filename):
-   ! echo "" > {filename}
-
-# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
-def writeLineToFile(filename):
-  ! echo "==============================" >> {filename}
-
+  
 # I copied code from here https://www.programiz.com/python-programming/datetime/current-datetime
 # TODO it would be nice to support an argument which specifies the timezone instead of hardcoding UTC
 def getDateTime():
@@ -53,3 +41,17 @@ def countNumberOfImagesInFolder(folder):
 def reformatToSafeString(inputString):
   return inputString.replace("(", "\(").replace(")", "\)").replace("&", "\&")
 
+"""" I dont know how to write google colab code that invokes the shell in a python file without a syntax error so this code is commented out for now
+
+# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
+def writeToFile(filename, text):
+  ! echo {text} >> {filename}
+
+# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
+def clearFile(filename):
+   ! echo "" > {filename}
+
+# This function assumes it is being called within Google Colab - it will likely not work anywhere else 
+def writeLineToFile(filename):
+  ! echo "==============================" >> {filename}
+"""
