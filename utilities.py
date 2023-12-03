@@ -115,6 +115,9 @@ def writeLogForTagging(filePath, fileName, trigger, gelbooruSearchQuery, removed
   logTagTimerLine = "Tagging Process took: " + str(get_time_hh_mm_ss(taggingTime))
   writeLineToFile(filePath, fileName, logTagTimerLine)
 
+def calculateItemsPerSecond(items, seconds):
+  return int(items) / int(seconds)
+
 def writeLogForLoraTrainingSettings(filePath, fileName, dataSetFolder, modelName, flipAug, numRepeats, perferredUnits, howManyUnits, trainingBatchSize, dimToUse, trainingTime, totalTime):
     writeHeaderToFile(filePath, fileName, "Lora Training Data")
     logLoraTrainingLogTemp = "Trained on: " + str(countNumberOfImagesInFolder(dataSetFolder)) + " images"
