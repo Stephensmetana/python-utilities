@@ -138,6 +138,35 @@ def writeLogForLoraTrainingSettings(filePath, fileName, dataSetFolder, modelName
     logLoraTimerLine = "Total Process took: " + str(get_time_hh_mm_ss(totalTime))
     writeLineToFile(filePath, fileName, logLoraTimerLine)
 
+
+# Adding a new v2 interface for the Training Settings log in such a way that it wont existing implementations 
+def writeLogForLoraTrainingSettings_v2(filePath, fileName, dataSetFolder, modelName, flipAug, numRepeats, perferredUnits, howManyUnits, trainingBatchSize, dimToUse, totalSteps, resolution, trainingTime, totalTime):
+    writeHeaderToFile(filePath, fileName, "Lora Training Data")
+    logLoraTrainingLogTemp = "Trained on: " + str(countNumberOfImagesInFolder(dataSetFolder)) + " images"
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Training Model: " + modelName
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "flip_aug: " + getTorF(flipAug)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Num of Repeats: " + str(numRepeats)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Unit is Epochs or Steps: " + str(perferredUnits)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Number of Epochs or Steps: " + str(howManyUnits)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Training Batch Size: " + str(trainingBatchSize)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Total Steps: " + str(totalSteps)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Resolution: " + str(resolution)
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTrainingLogTemp = "Network Dim: " + dimToUse
+    writeLineToFile(filePath, fileName, logLoraTrainingLogTemp)
+    logLoraTimerLine = "Lora Creation Process took: " + str(get_time_hh_mm_ss(trainingTime))
+    writeLineToFile(filePath, fileName, logLoraTimerLine)
+    logLoraTimerLine = "Total Process took: " + str(get_time_hh_mm_ss(totalTime))
+    writeLineToFile(filePath, fileName, logLoraTimerLine)
+
 def writeLogForFlipAugs(filePath, fileName, isImageDownloadSkipped, isTaggingSkipped, isTrainingSkipped):
   writeHeaderToFile(filePath, fileName, "Skip Flags")
   logTemp = "skip_image_downloading: " + getTorF(isImageDownloadSkipped)
